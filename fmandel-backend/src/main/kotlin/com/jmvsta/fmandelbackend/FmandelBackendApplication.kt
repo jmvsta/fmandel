@@ -27,11 +27,8 @@ class FMController {
 
     @GetMapping("/init", produces = [MediaType.IMAGE_JPEG_VALUE])
     fun initFractal(@RequestParam xSize: Number, @RequestParam ySize: Number): ByteArray {
-        if (fractalExplorer == null) {
-            fractalExplorer = FractalExplorer(xSize.toInt(), ySize.toInt())
-        } else {
-            fractalExplorer?.reset()
-        }
+        fractalExplorer = fractalExplorer?.reset() ?: FractalExplorer(xSize.toInt(), ySize.toInt())
+
         ByteArrayOutputStream().use {
             ImageIO.write(fractalExplorer?.drawFractal(), "PNG", it)
             return IOUtils.toByteArray(ByteArrayInputStream(it.toByteArray()))
