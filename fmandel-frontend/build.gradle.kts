@@ -24,9 +24,17 @@ kotlin {
     js(IR) {
         binaries.executable()
         browser {
-            commonWebpackConfig {
-                cssSupport.enabled = true
+            runTask {
+                devServer = devServer?.copy(port = 3000)
             }
+//            runTask {
+//                devServer = org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.DevServer(
+//                    port = 3000,
+//                )
+//            }
+//            commonWebpackConfig {
+//                cssSupport.enabled = true
+//            }
         }
     }
 }
