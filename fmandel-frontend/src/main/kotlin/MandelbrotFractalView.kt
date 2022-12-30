@@ -15,10 +15,10 @@ val Welcome = FC<MandelbrotFractalProps> { _ ->
         id = "mainDiv"
         img {
             id = "fractal"
-            src = "http://localhost:8088/init?xSize=${window.innerWidth}&ySize=${window.innerHeight}"
+            src = "http://localhost:8080/init?xSize=${window.innerWidth}&ySize=${window.innerHeight}"
             onWheel = { event ->
                 document.getElementById("fractal")?.setAttribute("src",
-                    "http://localhost:8088/frac?x=${event.clientX}&y=${event.clientY}&direction=${if(event.deltaY<0) "DOWN" else "UP"}")
+                    "http://localhost:8080/frac?x=${event.clientX}&y=${event.clientY}&direction=${if(event.deltaY<0) "DOWN" else "UP"}")
             }
         }
     }

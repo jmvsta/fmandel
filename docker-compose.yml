@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  backend:
+    build: fmandel-backend .
+    command: bin/app
+    ports:
+      - "80:80"

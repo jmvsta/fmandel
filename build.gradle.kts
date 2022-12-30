@@ -1,4 +1,4 @@
-group = "com.jmvsta"
+group = "com.jmvsta.fmandelbackend"
 version = "1.0-SNAPSHOT"
 
 repositories {
