@@ -5,4 +5,9 @@ services:
     build: fmandel-backend .
     command: bin/app
     ports:
-      - "80:80"
+      - "8080:8080"
+#  frontend:
+#    build: fmandel-frontend .
+#    command: bin/app
+#    ports:
+#      - "3000:3000"
