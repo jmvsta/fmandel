@@ -7,7 +7,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import java.awt.image.BufferedImage
 import java.awt.image.BufferedImage.TYPE_INT_ARGB
-import kotlin.system.measureTimeMillis
 
 class FractalExplorer(
     /**
@@ -56,32 +55,23 @@ class FractalExplorer(
      */
     fun drawFractal(): BufferedImage {
 
-//        for (i in 0 until width) {
-//            for (j in 0 until height) {
-//                drawPixel(i, j)
-//            }
-//        }
-        val time = measureTimeMillis {
-//            val part = width/12
-
-            runBlocking {
-                (0 until  width).map { i ->
-                    CoroutineScope(Dispatchers.Default).async {
-                        for (j in 0 until height) {
-                            drawPixel(i, j)
-                        }
+        runBlocking {
+            (0 until  width).map { i ->
+                CoroutineScope(Dispatchers.Default).async {
+                    for (j in 0 until height) {
+                        drawPixel(i, j)
                     }
-                }.awaitAll()
-            }
+                }
+            }.awaitAll()
         }
-        println("Time: $time")
+
         return display
     }
 
 
     fun drawFractal(x: Int, y: Int, direction: String): BufferedImage {
-        val xCoordinate = FractalGenerator.getCoord(range.x, range.x + range.width, width, x);
-        val yCoordinate = FractalGenerator.getCoord(range.y, range.y + range.height, height, y);
+        val xCoordinate = FractalGenerator.getCoord(range.x, range.x + range.width, width, x)
+        val yCoordinate = FractalGenerator.getCoord(range.y, range.y + range.height, height, y)
 
         fractal.recenterAndZoomRange(range, xCoordinate, yCoordinate, if (direction == "UP") 1.5 else 0.5)
 

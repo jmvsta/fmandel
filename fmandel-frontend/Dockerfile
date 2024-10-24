@@ -1,5 +1,11 @@
 FROM openjdk:17-oracle
-#COPY --from=builder / ./
-COPY build/libs/fmandel-backend-0.0.1-SNAPSHOT.jar /fmandel-backend.jar
-ENTRYPOINT ["java","-Dfile.encoding=UTF-8","-XshowSettings","-XX:+PrintFlagsFinal","-jar","/fmandel-backend.jar"]
-EXPOSE 8088/tcp
+COPY gradle gradle
+COPY src src
+COPY Dockerfile Dockerfile
+COPY build.gradle.kts build.gradle.kts
+COPY gradle.properties gradle.properties
+COPY gradlew gradlew
+COPY gradlew.bat gradlew.bat
+COPY settings.gradle.kts settings.gradle.kts
+ENTRYPOINT ["./gradlew","run"]
+EXPOSE 3000/tcp

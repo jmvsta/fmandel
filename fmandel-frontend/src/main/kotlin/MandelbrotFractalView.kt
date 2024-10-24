@@ -10,7 +10,6 @@ external interface MandelbrotFractalProps : Props {
 }
 
 val Welcome = FC<MandelbrotFractalProps> { _ ->
-//    var name by useState(props.name)
     div {
         id = "mainDiv"
         img {

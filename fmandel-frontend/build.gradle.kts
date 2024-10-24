@@ -21,20 +21,19 @@ dependencies {
 }
 
 kotlin {
-    js(IR) {
-        binaries.executable()
+    js {
         browser {
-            runTask {
-                devServer = devServer?.copy(port = 3000)
+            binaries.executable()
+            webpackTask {
+                cssSupport.enabled = true
             }
-//            runTask {
-//                devServer = org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.DevServer(
-//                    port = 3000,
-//                )
-//            }
-//            commonWebpackConfig {
-//                cssSupport.enabled = true
-//            }
+            runTask {
+                devServer = devServer?.copy(
+                    port = 3000,
+                    open = false
+                )
+            }
         }
     }
 }
+

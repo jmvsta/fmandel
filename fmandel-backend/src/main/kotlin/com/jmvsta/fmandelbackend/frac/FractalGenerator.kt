@@ -37,9 +37,6 @@ abstract class FractalGenerator {
          * Координата должна находиться в диапазоне [0, size].
          */
         fun getCoord(rangeMin: Double, rangeMax: Double, size: Int, coord: Int): Double {
-//            FIXME: add assertations
-//            assert(size > 0)
-//            assert(coord >= 0 && coord < size)
             val range = rangeMax - rangeMin
             return rangeMin + range * coord.toDouble() / size.toDouble()
         }

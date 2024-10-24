@@ -1,25 +1,4 @@
-*.iml
-
-# IntelliJ
-out/
-
-# mpeltonen/sbt-idea plugin
-.idea_modules/
-
-### Kotlin template
-# Compiled class file
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
 *.nar
@@ -27,10 +6,13 @@ out/
 *.zip
 *.tar.gz
 *.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+*.lock
+*.iml
 hs_err_pid*
 
+
+out/
+.idea_modules/
 .gradle/
 .idea/
 build/
@@ -41,3 +23,9 @@ fmandel-frontend/build/
 fmandel-frontend/.idea/
 fmandel-frontend/node-modules/
 /fmandel-frontend/node_modules/
+
+fmandel-gpu-dll/.vs/*
+fmandel-gpu-dll/x64/*
+fmandel-gpu-dll/Mandelbrot/x64/*
+fmandel-gpu-dll/.vs/MandelbrotLibrary/*
+fmandel-gpu-dll/.vs/MandelbrotLibrary/FileContentIndex/*

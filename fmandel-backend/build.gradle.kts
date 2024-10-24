@@ -36,11 +36,17 @@ tasks.withType<Test> {
 
 tasks.withType<Jar> {
     manifest {
-        attributes["Main-Class"] = "com.jmvsta.fmandelbackend.FmandelBackendApplicationKt"
+        attributes["Main-Class"] = "com.jmvsta.fmandelbackend.FmandelBackendCPUApplicationKt"
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     configurations["compileClasspath"].forEach { file: File ->
         from(zipTree(file.absoluteFile))
     }
+}
+
+tasks.register("runApp", JavaExec::class) {
+    main = "com.jmvsta.fmandelbackend.FmandelBackendCPUApplicationKt"
+    classpath = sourceSets["main"].runtimeClasspath
+    jvmArgs = listOf("-Xmx1G") // Example JVM args if needed
 }
 
