@@ -10,7 +10,6 @@
 *.iml
 hs_err_pid*
 
-
 out/
 .idea_modules/
 .gradle/
@@ -23,12 +22,3 @@ fmandel-frontend/build/
 fmandel-frontend/.idea/
 fmandel-frontend/node-modules/
 /fmandel-frontend/node_modules/
-
-fmandel-gpu-dll/.vs/*
-fmandel-gpu-dll/x64/*
-fmandel-gpu-dll/Mandelbrot/x64/*
-fmandel-gpu-dll/.vs/MandelbrotLibrary/*
-fmandel-gpu-dll/.vs/MandelbrotLibrary/FileContentIndex/*
-/fmandel-gpu-dll/cmake-build-release-visual-studio/
-/fmandel-gpu-dll/cmake-build-release/
-/fmandel-gpu-dll/cmake-build-debug/
