@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.21"
+    kotlin("jvm") version "1.9.0"
 }
 
 group = "com.jmvsta.fmandelbackend"
@@ -13,14 +13,14 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-netty:2.2.1")
+    implementation("io.ktor:ktor-server-netty:3.0.0")
     implementation("io.ktor:ktor-html-builder:1.6.8")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0")
     implementation("io.ktor:ktor-server-cors:2.2.1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("org.apache.commons:commons-io:1.3.2")
+    implementation("commons-io:commons-io:2.17.0")
 }
 
 tasks.withType<KotlinCompile> {
@@ -49,4 +49,3 @@ tasks.register("runApp", JavaExec::class) {
     classpath = sourceSets["main"].runtimeClasspath
     jvmArgs = listOf("-Xmx1G") // Example JVM args if needed
 }
-
