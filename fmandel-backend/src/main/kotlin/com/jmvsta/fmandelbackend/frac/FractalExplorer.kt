@@ -7,56 +7,27 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import java.awt.image.BufferedImage
 import java.awt.image.BufferedImage.TYPE_INT_ARGB
+import kotlin.math.cos
+import kotlin.math.ln
+import kotlin.math.sin
 
 class FractalExplorer(
-    /**
-     * Целочисленный размер отображения - это ширина и высота отображения в пикселях.
-     */
     private val width: Int,
-    private val height: Int
+    private val height: Int,
+    private val fractal: FractalGenerator
 ) {
-    /**
-     * Ссылка JImageDisplay для обновления отображения с помощью различных методов как
-     * фрактал вычислен.
-     */
+
     private val display: BufferedImage
 
-    /**
-     * Объект FractalGenerator для каждого типа фрактала.
-     */
-    private val fractal: FractalGenerator
+    private var range: Rectangle2D = Rectangle2D(width = 4.0 * width / height)
 
-    /**
-     * Объект Rectangle2D.Double, который определяет диапазон
-     * то, что мы в настоящее время показываем.
-     */
-    private var range: Rectangle2D
-
-    /**
-     * Конструктор, который принимает размер отображения, сохраняет его и
-     * инициализирует объекты диапазона и фрактал-генератора.
-     */
     init {
-        /** Размер дисплея   */
-        /** Инициализирует фрактальный генератор и объекты диапазона.  */
-        fractal = Mandelbrot()
-        range = Rectangle2D(width = 4.0 * width / height)
         display = BufferedImage(width, height, TYPE_INT_ARGB)
     }
 
-    /**
-     * Приватный вспомогательный метод для отображения фрактала. Этот метод проходит
-     * через каждый пиксель на дисплее и вычисляет количество
-     * итераций для соответствующих координат во фрактале
-     * Область отображения. Если количество итераций равно -1, установит цвет пикселя.
-     * в черный. В противном случае выберет значение в зависимости от количества итераций.
-     * Обновит дисплей цветом для каждого пикселя и перекрасит
-     * JImageDisplay, когда все пиксели нарисованы.
-     */
     fun drawFractal(): BufferedImage {
-
         runBlocking {
-            (0 until  width).map { i ->
+            (0 until width).map { i ->
                 CoroutineScope(Dispatchers.Default).async {
                     for (j in 0 until height) {
                         drawPixel(i, j)
@@ -69,48 +40,65 @@ class FractalExplorer(
     }
 
 
-    fun drawFractal(x: Int, y: Int, direction: String): BufferedImage {
-        val xCoordinate = FractalGenerator.getCoord(range.x, range.x + range.width, width, x)
-        val yCoordinate = FractalGenerator.getCoord(range.y, range.y + range.height, height, y)
-
-        fractal.recenterAndZoomRange(range, xCoordinate, yCoordinate, if (direction == "UP") 1.5 else 0.5)
-
+    fun drawFractal(x: Int, y: Int, operation: String, direction: String?): BufferedImage {
+        val xCoordinate = getCoord(range.x, range.x + range.width, width, x)
+        val yCoordinate = getCoord(range.y, range.y + range.height, height, y)
+        when (operation) {
+            "move" -> fractal.recenter(range, xCoordinate, yCoordinate)
+            "zoom" -> fractal.recenterAndZoomRange(range, xCoordinate, yCoordinate, if (direction == "UP") 1.5 else 0.5)
+        }
         return drawFractal()
     }
 
+    private fun getCoord(rangeMin: Double, rangeMax: Double, size: Int, coord: Int): Double {
+        val range = rangeMax - rangeMin
+        return rangeMin + range * coord.toDouble() / size.toDouble()
+    }
+
     private fun drawPixel(x: Int, y: Int) {
-        /**
-         * Находим соответствующие координаты xCoord и yCoord
-         * в области отображения фрактала.
-         */
-        val xCoordinate = FractalGenerator.getCoord(range.x, range.x + range.width, width, x)
-        val yCoordinate = FractalGenerator.getCoord(range.y, range.y + range.height, height, y)
+        val xCoordinate = getCoord(range.x, range.x + range.width, width, x)
+        val yCoordinate = getCoord(range.y, range.y + range.height, height, y)
+        val iterRes = fractal.numIterations(xCoordinate, yCoordinate)
 
-        /**
-         * Вычисляем количество итераций для координат в
-         * область отображения фрактала.
-         */
-        val iteration = fractal.numIterations(xCoordinate, yCoordinate)
-
-        if (iteration == -1) {
+        if (iterRes.iterations == -1) {
             display.setRGB(x, y, java.awt.Color.black.rgb)
         } else {
-            /**
-             * В противном случае выбераем значение оттенка на основе числа
-             * итераций.
-             */
-//            val hue = 0.6f + iteration.toFloat() / 200f
-            val hue = 0.6f + iteration.toFloat() / 2000f
-            val rgbColor: Int = java.awt.Color.HSBtoRGB(hue, 15f, 1f)
-            /** Обновляем дисплей цветом для каждого пикселя.  */
+            val smoothIteration = iterRes.iterations + 1 - ln(ln(iterRes.zx2 + iterRes.zy2)) / ln(2.0);
+            val hue = 0.6 + smoothIteration / 2500.0
+            val saturation = 0.5 + 0.5 * sin(iterRes.iterations.toDouble() / 10)
+            val brightness = 0.7 + 0.3 * cos(iterRes.iterations.toDouble() / 15)
+            val rgbColor = hsbToRgb(hue % 1.0, 1.0, 1.0)
+//            val hue = 0.6f + iterRes.iterations.toFloat() / 2000f
+//            val rgbColor: Int = java.awt.Color.HSBtoRGB(hue, 15f, 1f)
             display.setRGB(x, y, rgbColor)
         }
+    }
+
+    private fun hsbToRgb(hue: Double, saturation: Double, brightness: Double): Int {
+        val h = (hue % 1.0) * 6.0 // Map hue to [0, 6)
+        val c = brightness * saturation
+        val x = c * (1 - Math.abs(h % 2 - 1))
+        val m = brightness - c
+
+        val (r, g, b) = when (h.toInt()) {
+            0 -> Triple(c, x, 0.0)
+            1 -> Triple(x, c, 0.0)
+            2 -> Triple(0.0, c, x)
+            3 -> Triple(0.0, x, c)
+            4 -> Triple(x, 0.0, c)
+            else -> Triple(c, 0.0, x)
+        }
+
+        return java.awt.Color(
+            ((r + m) * 255).toInt(),
+            ((g + m) * 255).toInt(),
+            ((b + m) * 255).toInt()
+        ).rgb
     }
 
     fun reset(): FractalExplorer {
         range = Rectangle2D(width = 4.0 * width / height)
         return this
     }
-
 
 }
